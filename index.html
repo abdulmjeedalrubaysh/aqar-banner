@@ -11,7 +11,7 @@
 
     <style>
         :root {
-            --aqar-green: #00873e; /* درجة الأخضر الجديدة المطلوبة */
+            --aqar-green: #00873e;
             --aqar-light-green: #8cc63f;
             --aqar-bg: #f3f4f6;
             --aqar-card-bg: #eaeaea;
@@ -165,7 +165,6 @@
             object-fit: contain;
         }
 
-        /* جعل شقة للبيع في سطر واحد */
         .property-title { text-align: center; margin: 2px 0 10px 0; }
         .property-title .title-single-line {
             font-size: 48px;
@@ -221,7 +220,6 @@
             direction: rtl;
         }
 
-        /* ضبط الوحدة لتكون يسار الرقم مباشرة وبشكل صحيح */
         .license-card .value-wrapper {
             display: flex;
             align-items: center;
@@ -240,7 +238,7 @@
         }
 
         .banner-footer {
-            background: var(--aqar-green); /* استخدام الدرجة الجديدة للأخضر */
+            background: var(--aqar-green);
             color: #fff;
             padding: 12px 25px;
             display: flex;
@@ -300,7 +298,7 @@
                 </div>
                 <div class="toggle-item">
                     <span>سعر المتر</span>
-                    <input type="checkbox" id="showPricePerMeter" onchange="toggleFields()">
+                    <input type="checkbox" id="showPricePerMeter" checked onchange="toggleFields()">
                 </div>
                 <div class="toggle-item">
                     <span>ترخيص الإعلان</span>
@@ -468,7 +466,6 @@
             document.getElementById('viewLocation').innerText = document.getElementById('propLocation').value;
             document.getElementById('viewTotalPrice').innerText = document.getElementById('totalPriceVal').value;
 
-            // استخراج الأرقام فقط وتفريغ الوحدة لضمان ترتيبها
             let areaRaw = document.getElementById('areaVal').value.replace(/[^\d]/g, '');
             document.getElementById('viewArea').innerText = areaRaw || document.getElementById('areaVal').value;
 
