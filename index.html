@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة عقار - مولد اللوحات الإعلانية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        :root {
+            --aqar-green: #00873e; /* درجة الأخضر الجديدة المطلوبة */
+            --aqar-light-green: #8cc63f;
+            --aqar-bg: #f3f4f6;
+            --aqar-card-bg: #eaeaea;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #121212;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            gap: 25px;
+            box-sizing: border-box;
+        }
+
+        .controls-sidebar {
+            width: 360px;
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            height: fit-content;
+            max-height: 95vh;
+            overflow-y: auto;
+        }
+
+        .fields-toggle-box {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+
+        .fields-toggle-box .title {
+            color: #38bdf8;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .toggle-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .toggle-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #1a2234;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #e5e7eb;
+        }
+
+        .toggle-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #10b981;
+            cursor: pointer;
+        }
+
+        .form-group { margin-bottom: 10px; }
+        .form-group label { display: block; margin-bottom: 4px; font-size: 12px; color: #ccc; }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background: #111;
+            color: #fff;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        .form-row { display: flex; gap: 10px; }
+
+        .btn-action {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            background: var(--aqar-light-green);
+            color: #000;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .btn-pdf { background: #fff; color: #000; }
+
+        .preview-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            border-radius: 16px;
+            padding: 20px;
+            min-height: 85vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .banner-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform-origin: center center;
+        }
+
+        .banner-canvas {
+            background: var(--aqar-bg);
+            color: #111;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-sizing: border-box;
+            flex-shrink: 0;
+        }
+
+        .banner-main {
+            padding: 20px 35px 15px 35px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-sizing: border-box;
+        }
+
+        .banner-header {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .brand-logo-img {
+            height: 45px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* جعل شقة للبيع في سطر واحد */
+        .property-title { text-align: center; margin: 2px 0 10px 0; }
+        .property-title .title-single-line {
+            font-size: 48px;
+            font-weight: 900;
+            line-height: 1.1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+        }
+        .property-title .title-single-line .type { color: #000; }
+        .property-title .title-single-line .action { color: var(--aqar-green); }
+
+        .property-title .location {
+            font-size: 20px;
+            font-weight: 700;
+            color: #555;
+            margin-top: 4px;
+        }
+
+        .property-title .total-price {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--aqar-green);
+            background: #e2f0d9;
+            display: inline-block;
+            padding: 4px 18px;
+            border-radius: 20px;
+            margin-top: 6px;
+        }
+
+        .license-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .license-card {
+            background: var(--aqar-card-bg);
+            padding: 10px 18px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .license-card label {
+            color: #333;
+            font-size: 16px;
+            direction: rtl;
+        }
+
+        /* ضبط الوحدة لتكون يسار الرقم مباشرة وبشكل صحيح */
+        .license-card .value-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            direction: ltr;
+        }
+
+        .license-card .value-wrapper .number {
+            color: #000;
+            font-weight: 900;
+        }
+
+        .license-card .value-wrapper .unit {
+            color: #000;
+            font-weight: 900;
+        }
+
+        .banner-footer {
+            background: var(--aqar-green); /* استخدام الدرجة الجديدة للأخضر */
+            color: #fff;
+            padding: 12px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .footer-text { text-align: center; font-size: 15px; line-height: 1.3; }
+        .footer-text highlight { color: var(--aqar-light-green); font-weight: bold; }
+        .qr-box {
+            background: #fff;
+            padding: 4px;
+            border-radius: 8px;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .qr-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .store-badges { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
+        .store-btn { background: #000; color: #fff; padding: 5px 12px; border-radius: 6px; font-size: 9px; text-align: center; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="controls-sidebar">
+        <div class="fields-toggle-box">
+            <div class="title">
+                👁️ التحكم بإظهار وإخفاء الحقول
+            </div>
+            <div class="toggle-grid">
+                <div class="toggle-item">
+                    <span>العنوان</span>
+                    <input type="checkbox" id="showLocation" checked onchange="toggleFields()">
+                </div>
+                <div class="toggle-item">
+                    <span>السعر الإجمالي</span>
+                    <input type="checkbox" id="showTotalPrice" checked onchange="toggleFields()">
+                </div>
+                <div class="toggle-item">
+                    <span>المساحة</span>
+                    <input type="checkbox" id="showArea" checked onchange="toggleFields()">
+                </div>
+                <div class="toggle-item">
+                    <span>عرض الشارع</span>
+                    <input type="checkbox" id="showStreet" checked onchange="toggleFields()">
+                </div>
+                <div class="toggle-item">
+                    <span>سعر المتر</span>
+                    <input type="checkbox" id="showPricePerMeter" onchange="toggleFields()">
+                </div>
+                <div class="toggle-item">
+                    <span>ترخيص الإعلان</span>
+                    <input type="checkbox" id="showAdNo" checked onchange="toggleFields()">
+                </div>
+                <div class="toggle-item" style="grid-column: span 2;">
+                    <span>رقم رخصة فال</span>
+                    <input type="checkbox" id="showFalNo" checked onchange="toggleFields()">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group" style="flex: 1;">
+                <label>العرض (بكسل)</label>
+                <input type="number" id="bannerWidth" value="850" oninput="updateDimensions()">
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label>الارتفاع (بكسل)</label>
+                <input type="number" id="bannerHeight" value="600" oninput="updateDimensions()">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group" style="flex: 1;">
+                <label>نوع العقار</label>
+                <input type="text" id="propType" value="شقة" oninput="render()">
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label>نوع العرض</label>
+                <select id="propAction" onchange="render()">
+                    <option value="للبيع">للبيع</option>
+                    <option value="للإيجار">للإيجار</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>العنوان (الحي - المدينة)</label>
+            <input type="text" id="propLocation" value="حي النرجس - الرياض" oninput="render()">
+        </div>
+
+        <div class="form-group">
+            <label>السعر الإجمالي</label>
+            <input type="text" id="totalPriceVal" value="1,200,000 ريال" oninput="render()">
+        </div>
+
+        <div class="form-row">
+            <div class="form-group" style="flex: 1;">
+                <label>المساحة</label>
+                <input type="text" id="areaVal" value="350" oninput="render()">
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label>عرض الشارع</label>
+                <input type="text" id="streetVal" value="20" oninput="render()">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>سعر المتر</label>
+            <input type="text" id="priceVal" value="4,500 ريال" oninput="render()">
+        </div>
+
+        <div class="form-group">
+            <label>رقم رخصة فال</label>
+            <input type="text" id="falNo" value="1200013881" oninput="render()">
+        </div>
+
+        <div class="form-group">
+            <label>رقم ترخيص الإعلان</label>
+            <input type="text" id="adNo" value="7201056329" oninput="render()">
+        </div>
+
+        <div class="form-group">
+            <label>رابط الإعلان (توليد تلقائي QR)</label>
+            <input type="text" id="adUrl" value="https://aqar.fm/ad/7201056329" oninput="generateQR()">
+        </div>
+
+        <div class="form-group">
+            <label>أو رفع صورة QR جاهزة</label>
+            <input type="file" id="qrUpload" accept="image/*" onchange="uploadQR(event)">
+        </div>
+
+        <button class="btn-action" onclick="downloadImage()">تحميل صورة (PNG)</button>
+        <button class="btn-action btn-pdf" onclick="downloadPDF()">تحميل ملف طباعة (PDF)</button>
+    </div>
+
+    <div class="preview-area" id="previewArea">
+        <div class="banner-wrapper" id="bannerWrapper">
+            <div id="banner" class="banner-canvas">
+                <div class="banner-main">
+                    <div class="banner-header">
+                        <img src="file:///C:/Users/Asus/Downloads/aqar-logo.svg" alt="عقار Aqar" class="brand-logo-img">
+                    </div>
+
+                    <div class="property-title">
+                        <div class="title-single-line">
+                            <span class="type" id="viewPropType">شقة</span>
+                            <span class="action" id="viewPropAction">للبيع</span>
+                        </div>
+                        <div class="location" id="viewLocation">حي النرجس - الرياض</div>
+                        <div class="total-price" id="viewTotalPrice">1,200,000 ريال</div>
+                    </div>
+
+                    <div class="license-cards">
+                        <div class="license-card" id="cardArea">
+                            <label>المساحة :</label>
+                            <div class="value-wrapper">
+                                <span class="unit">م²</span>
+                                <span class="number" id="viewArea">350</span>
+                            </div>
+                        </div>
+                        <div class="license-card" id="cardStreet">
+                            <label>عرض الشارع :</label>
+                            <div class="value-wrapper">
+                                <span class="unit">متر</span>
+                                <span class="number" id="viewStreet">20</span>
+                            </div>
+                        </div>
+                        <div class="license-card" id="cardPricePerMeter">
+                            <label>سعر المتر :</label>
+                            <div class="value-wrapper">
+                                <span class="number" id="viewPrice">4,500 ريال</span>
+                            </div>
+                        </div>
+                        <div class="license-card" id="cardFalNo">
+                            <label>رقم رخصة فال :</label>
+                            <div class="value-wrapper">
+                                <span class="number" id="viewFalNo">1200013881</span>
+                            </div>
+                        </div>
+                        <div class="license-card" id="cardAdNo">
+                            <label>رقم ترخيص الإعلان :</label>
+                            <div class="value-wrapper">
+                                <span class="number" id="viewAdNo">7201056329</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="banner-footer">
+                    <div class="store-badges">
+                        <div class="store-btn">App Store</div>
+                        <div class="store-btn">Google Play</div>
+                    </div>
+
+                    <div class="footer-text">
+                        يمكنك الاطلاع على تفاصيل العقار<br>
+                        عبر <highlight>تطبيق عقار</highlight><br>
+                        <small style="font-size: 11px; opacity: 0.85;">المنصة الإلكترونية الأولى في المملكة</small>
+                    </div>
+
+                    <div id="qrcode" class="qr-box"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let customQRImage = null;
+
+        function render() {
+            document.getElementById('viewPropType').innerText = document.getElementById('propType').value;
+            document.getElementById('viewPropAction').innerText = document.getElementById('propAction').value;
+            document.getElementById('viewLocation').innerText = document.getElementById('propLocation').value;
+            document.getElementById('viewTotalPrice').innerText = document.getElementById('totalPriceVal').value;
+
+            // استخراج الأرقام فقط وتفريغ الوحدة لضمان ترتيبها
+            let areaRaw = document.getElementById('areaVal').value.replace(/[^\d]/g, '');
+            document.getElementById('viewArea').innerText = areaRaw || document.getElementById('areaVal').value;
+
+            let streetRaw = document.getElementById('streetVal').value.replace(/[^\d]/g, '');
+            document.getElementById('viewStreet').innerText = streetRaw || document.getElementById('streetVal').value;
+
+            document.getElementById('viewPrice').innerText = document.getElementById('priceVal').value;
+            document.getElementById('viewFalNo').innerText = document.getElementById('falNo').value;
+            document.getElementById('viewAdNo').innerText = document.getElementById('adNo').value;
+        }
+
+        function toggleFields() {
+            document.getElementById('viewLocation').style.display = document.getElementById('showLocation').checked ? 'block' : 'none';
+            document.getElementById('viewTotalPrice').style.display = document.getElementById('showTotalPrice').checked ? 'inline-block' : 'none';
+            document.getElementById('cardArea').style.display = document.getElementById('showArea').checked ? 'flex' : 'none';
+            document.getElementById('cardStreet').style.display = document.getElementById('showStreet').checked ? 'flex' : 'none';
+            document.getElementById('cardPricePerMeter').style.display = document.getElementById('showPricePerMeter').checked ? 'flex' : 'none';
+            document.getElementById('cardFalNo').style.display = document.getElementById('showFalNo').checked ? 'flex' : 'none';
+            document.getElementById('cardAdNo').style.display = document.getElementById('showAdNo').checked ? 'flex' : 'none';
+            fitBanner();
+        }
+
+        function updateDimensions() {
+            const w = parseInt(document.getElementById('bannerWidth').value) || 850;
+            const h = parseInt(document.getElementById('bannerHeight').value) || 600;
+            const banner = document.getElementById('banner');
+
+            banner.style.width = w + 'px';
+            banner.style.height = h + 'px';
+
+            fitBanner();
+        }
+
+        function fitBanner() {
+            const area = document.getElementById('previewArea');
+            const wrapper = document.getElementById('bannerWrapper');
+            const banner = document.getElementById('banner');
+
+            const availableWidth = area.clientWidth - 40;
+            const availableHeight = area.clientHeight - 40;
+
+            const bannerWidth = banner.offsetWidth;
+            const bannerHeight = banner.offsetHeight;
+
+            const scaleX = availableWidth / bannerWidth;
+            const scaleY = availableHeight / bannerHeight;
+            const scale = Math.min(scaleX, scaleY, 1);
+
+            wrapper.style.transform = `scale(${scale})`;
+        }
+
+        function generateQR() {
+            if (customQRImage) return;
+            const url = document.getElementById('adUrl').value;
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = '';
+            new QRCode(qrContainer, { text: url, width: 70, height: 70, colorDark: "#000000", colorLight: "#ffffff" });
+        }
+
+        function uploadQR(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    customQRImage = e.target.result;
+                    const qrContainer = document.getElementById('qrcode');
+                    qrContainer.innerHTML = `<img src="${customQRImage}" alt="QR Code">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function downloadImage() {
+            const banner = document.getElementById('banner');
+            html2canvas(banner, { scale: 3 }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `لوحة-عقار.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const banner = document.getElementById('banner');
+
+            html2canvas(banner, { scale: 4 }).then(canvas => {
+                const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                const isVertical = banner.offsetHeight > banner.offsetWidth;
+                const pdf = new jsPDF({
+                    orientation: isVertical ? 'p' : 'l',
+                    unit: 'px',
+                    format: [canvas.width, canvas.height]
+                });
+                pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
+                pdf.save(`لوحة-طباعة.pdf`);
+            });
+        }
+
+        window.onload = function() {
+            render();
+            toggleFields();
+            updateDimensions();
+            generateQR();
+            window.addEventListener('resize', fitBanner);
+        };
+    </script>
+</body>
+</html>
