@@ -28,8 +28,10 @@
             box-sizing: border-box;
         }
 
+        /* ===== لوحة التحكم ===== */
         .controls-sidebar {
             width: 360px;
+            flex-shrink: 0;
             background: #1e1e1e;
             padding: 20px;
             border-radius: 16px;
@@ -56,6 +58,27 @@
             align-items: center;
             gap: 6px;
         }
+
+        .size-box {
+            background: #0f1f17;
+            border: 1px solid #14532d;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+        .size-box .title {
+            color: var(--aqar-light-green);
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .size-info {
+            font-size: 12px;
+            color: #9ca3af;
+            line-height: 1.7;
+            margin-top: 6px;
+        }
+        .size-info b { color: #e5e7eb; }
 
         .toggle-grid {
             display: grid;
@@ -107,10 +130,20 @@
             font-size: 14px;
             cursor: pointer;
             margin-top: 8px;
+            font-family: inherit;
         }
-
+        .btn-action:disabled { opacity: 0.5; cursor: wait; }
         .btn-pdf { background: #fff; color: #000; }
 
+        .status-msg {
+            font-size: 12px;
+            color: #fbbf24;
+            margin-top: 8px;
+            min-height: 16px;
+            line-height: 1.6;
+        }
+
+        /* ===== منطقة المعاينة ===== */
         .preview-area {
             flex: 1;
             display: flex;
@@ -119,9 +152,13 @@
             background: #000;
             border-radius: 16px;
             padding: 20px;
-            min-height: 85vh;
             overflow: hidden;
-            position: relative;
+            position: sticky;
+            top: 20px;
+            align-self: flex-start;
+            height: calc(100vh - 40px);
+            min-width: 0;
+            box-sizing: border-box;
         }
 
         .banner-wrapper {
@@ -131,11 +168,13 @@
             transform-origin: center center;
         }
 
+        /* ===== اللوحة: كل المقاسات بوحدة --u فتكبر وتصغر مع اللوحة ===== */
         .banner-canvas {
+            --u: 1px;
             background: var(--aqar-bg);
             color: #111;
             box-shadow: 0 15px 40px rgba(0,0,0,0.8);
-            border-radius: 16px;
+            border-radius: calc(16 * var(--u));
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -145,156 +184,180 @@
         }
 
         .banner-main {
-            padding: 20px 35px 15px 35px;
+            padding: calc(20 * var(--u)) calc(35 * var(--u)) calc(15 * var(--u)) calc(35 * var(--u));
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
             box-sizing: border-box;
+            min-height: 0;
         }
 
         .banner-header {
             display: flex;
             justify-content: flex-start;
             align-items: center;
+            flex-shrink: 0;
         }
 
-        /* اللوقو الرسمي لعقار (SVG فكتور) */
         .brand-logo {
-            height: 62px;
+            height: calc(62 * var(--u));
             width: auto;
             display: block;
         }
 
-        .property-title { text-align: center; margin: 2px 0 10px 0; }
+        .main-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .property-title {
+            text-align: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: calc(2 * var(--u)) 0 calc(10 * var(--u)) 0;
+        }
         .property-title .title-single-line {
-            font-size: 48px;
+            font-size: calc(48 * var(--u));
             font-weight: 900;
             line-height: 1.1;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 12px;
+            gap: calc(12 * var(--u));
         }
         .property-title .title-single-line .type { color: #000; }
         .property-title .title-single-line .action { color: var(--aqar-green); }
 
         .property-title .location {
-            font-size: 20px;
+            font-size: calc(20 * var(--u));
             font-weight: 700;
             color: #555;
-            margin-top: 4px;
+            margin-top: calc(4 * var(--u));
         }
 
         .property-title .total-price {
-            font-size: 28px;
+            font-size: calc(28 * var(--u));
             font-weight: 900;
             color: var(--aqar-green);
             background: #e2f0d9;
             display: inline-block;
-            padding: 4px 18px;
-            border-radius: 20px;
-            margin-top: 6px;
+            padding: calc(4 * var(--u)) calc(18 * var(--u));
+            border-radius: calc(20 * var(--u));
+            margin-top: calc(6 * var(--u));
         }
 
         .license-cards {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: calc(8 * var(--u));
             width: 100%;
+            flex-shrink: 0;
         }
 
         .license-card {
             background: var(--aqar-card-bg);
-            padding: 10px 18px;
-            border-radius: 8px;
+            padding: calc(10 * var(--u)) calc(18 * var(--u));
+            border-radius: calc(8 * var(--u));
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 16px;
+            font-size: calc(16 * var(--u));
             font-weight: bold;
         }
 
         .license-card label {
             color: #333;
-            font-size: 16px;
+            font-size: calc(16 * var(--u));
             direction: rtl;
         }
 
         .license-card .value-wrapper {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: calc(6 * var(--u));
             direction: ltr;
         }
 
-        .license-card .value-wrapper .number {
-            color: #000;
-            font-weight: 900;
-        }
-
+        .license-card .value-wrapper .number,
         .license-card .value-wrapper .unit {
             color: #000;
             font-weight: 900;
         }
 
+        /* ===== التخطيط العريض (بنرات طويلة مثل 2:1 و 3:1) ===== */
+        .banner-canvas.wide .main-body {
+            flex-direction: row;
+            align-items: center;
+            gap: calc(40 * var(--u));
+        }
+        .banner-canvas.wide .property-title {
+            flex: 1;
+            margin: 0;
+        }
+        .banner-canvas.wide .license-cards {
+            flex: 1;
+            width: auto;
+        }
+
         .banner-footer {
             background: var(--aqar-green);
             color: #fff;
-            padding: 12px 25px;
+            padding: calc(12 * var(--u)) calc(25 * var(--u));
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-shrink: 0;
         }
 
-        .footer-text { text-align: center; font-size: 15px; line-height: 1.3; }
+        .footer-text { text-align: center; font-size: calc(15 * var(--u)); line-height: 1.3; }
         .footer-text highlight { color: var(--aqar-light-green); font-weight: bold; }
+        .footer-text small { font-size: calc(11 * var(--u)); opacity: 0.85; }
+
         .qr-box {
             background: #fff;
-            padding: 4px;
-            border-radius: 8px;
-            width: 70px;
-            height: 70px;
+            padding: calc(4 * var(--u));
+            border-radius: calc(8 * var(--u));
+            width: calc(84 * var(--u));
+            height: calc(84 * var(--u));
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
             flex-shrink: 0;
+            box-sizing: border-box;
         }
-
-        .qr-box img {
-            width: 100%;
-            height: 100%;
+        .qr-box img, .qr-box canvas {
+            width: 100% !important;
+            height: 100% !important;
             object-fit: contain;
         }
 
-        .store-badges { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
-        .store-btn { background: #000; color: #fff; padding: 5px 12px; border-radius: 6px; font-size: 9px; text-align: center; font-weight: bold; }
+        .store-badges { display: flex; flex-direction: column; gap: calc(5 * var(--u)); flex-shrink: 0; }
+        .store-btn {
+            background: #000; color: #fff;
+            padding: calc(5 * var(--u)) calc(12 * var(--u));
+            border-radius: calc(6 * var(--u));
+            font-size: calc(9 * var(--u));
+            text-align: center; font-weight: bold;
+        }
 
         /* ===== الجوال والشاشات الصغيرة ===== */
         @media (max-width: 900px) {
-            body {
-                flex-direction: column;
-                padding: 10px;
-                gap: 12px;
-            }
+            body { flex-direction: column; padding: 10px; gap: 12px; }
             .preview-area {
-                order: -1;
-                flex: none;
-                width: 100%;
-                min-height: 0;
-                padding: 20px 0;
-                box-sizing: border-box;
-                border-radius: 12px;
+                order: -1; flex: none; width: 100%;
+                position: relative; top: auto; align-self: auto;
+                height: auto; min-height: 0; padding: 20px 0;
+                box-sizing: border-box; border-radius: 12px;
             }
             .controls-sidebar {
-                order: 1;
-                width: 100%;
-                max-height: none;
-                overflow-y: visible;
-                box-sizing: border-box;
-                padding: 15px;
+                order: 1; width: 100%; max-height: none;
+                overflow-y: visible; box-sizing: border-box; padding: 15px;
             }
             .form-group input, .form-group select { font-size: 16px; }
         }
@@ -303,6 +366,55 @@
 <body>
 
     <div class="controls-sidebar">
+
+        <div class="size-box">
+            <div class="title">📐 مقاس اللوحة</div>
+
+            <div class="form-group">
+                <label>اختر مقاس جاهز</label>
+                <select id="sizePreset" onchange="applyPreset()">
+                    <option value="a4l">A4 أفقي (29.7 × 21 سم)</option>
+                    <option value="a4p">A4 عمودي (21 × 29.7 سم)</option>
+                    <option value="a3l">A3 أفقي (42 × 29.7 سم)</option>
+                    <option value="a3p">A3 عمودي (29.7 × 42 سم)</option>
+                    <option value="b21">بنر 2 × 1 متر</option>
+                    <option value="b31">بنر 3 × 1 متر</option>
+                    <option value="b11">مربع (100 × 100 سم)</option>
+                    <option value="sq">منشور مربع للسوشال (1080 × 1080)</option>
+                    <option value="story">ستوري (1080 × 1920)</option>
+                    <option value="custom">مقاس مخصص</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" style="flex: 1;">
+                    <label>العرض</label>
+                    <input type="number" id="bannerWidth" value="29.7" min="1" step="any" oninput="customSize()">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>الارتفاع</label>
+                    <input type="number" id="bannerHeight" value="21" min="1" step="any" oninput="customSize()">
+                </div>
+                <div class="form-group" style="flex: 0 0 80px;">
+                    <label>الوحدة</label>
+                    <select id="sizeUnit" onchange="customSize()">
+                        <option value="cm">سم</option>
+                        <option value="px">بكسل</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom:0;">
+                <label>جودة التصدير (PNG / PDF)</label>
+                <select id="exportQuality">
+                    <option value="2000">عادية (2000 بكسل للضلع الأطول)</option>
+                    <option value="4000" selected>عالية (4000 بكسل)</option>
+                    <option value="6000">عالية جداً (6000 بكسل، للبنرات الكبيرة)</option>
+                </select>
+            </div>
+            <div class="size-info" id="sizeInfo"></div>
+        </div>
+
         <div class="fields-toggle-box">
             <div class="title">
                 👁️ التحكم بإظهار وإخفاء الحقول
@@ -336,17 +448,6 @@
                     <span>رقم رخصة فال</span>
                     <input type="checkbox" id="showFalNo" checked onchange="toggleFields()">
                 </div>
-            </div>
-        </div>
-
-        <div class="form-row">
-            <div class="form-group" style="flex: 1;">
-                <label>العرض (بكسل)</label>
-                <input type="number" id="bannerWidth" value="850" oninput="updateDimensions()">
-            </div>
-            <div class="form-group" style="flex: 1;">
-                <label>الارتفاع (بكسل)</label>
-                <input type="number" id="bannerHeight" value="600" oninput="updateDimensions()">
             </div>
         </div>
 
@@ -410,8 +511,9 @@
             <input type="file" id="qrUpload" accept="image/*" onchange="uploadQR(event)">
         </div>
 
-        <button class="btn-action" onclick="downloadImage()">تحميل صورة (PNG)</button>
-        <button class="btn-action btn-pdf" onclick="downloadPDF()">تحميل ملف طباعة (PDF)</button>
+        <button class="btn-action" id="btnPng" onclick="downloadImage()">تحميل صورة (PNG)</button>
+        <button class="btn-action btn-pdf" id="btnPdf" onclick="downloadPDF()">تحميل ملف طباعة (PDF)</button>
+        <div class="status-msg" id="statusMsg"></div>
     </div>
 
     <div class="preview-area" id="previewArea">
@@ -419,7 +521,6 @@
             <div id="banner" class="banner-canvas">
                 <div class="banner-main">
                     <div class="banner-header">
-                        <!-- اللوقو الرسمي لعقار: SVG مدمج (بدون ملفات خارجية) -->
                         <svg class="brand-logo" xmlns="http://www.w3.org/2000/svg" viewBox="28.50 280.22 555.96 232.02" role="img" aria-label="عقار AQAR">
                             <path fill="#00873E" d="M 33.921875 393.902344 C 50.292969 393.902344 63.734375 380.558594 63.734375 364.179688 L 63.734375 335.542969 C 63.734375 332.613281 61.351562 330.226562 58.421875 330.226562 C 55.496094 330.226562 53.109375 332.613281 53.109375 335.542969 L 53.109375 364.179688 C 53.109375 374.703125 44.546875 383.269531 33.921875 383.269531 C 30.992188 383.269531 28.609375 385.65625 28.609375 388.585938 C 28.609375 391.515625 30.992188 393.902344 33.921875 393.902344 Z M 33.921875 393.902344"/>
                             <path fill="#00873E" d="M 147.867188 319.273438 C 147.867188 319.757812 147.820312 320.234375 147.726562 320.710938 C 147.632812 321.1875 147.492188 321.648438 147.308594 322.09375 C 147.121094 322.542969 146.894531 322.96875 146.625 323.371094 C 146.355469 323.773438 146.050781 324.144531 145.707031 324.488281 C 145.367188 324.832031 144.992188 325.136719 144.589844 325.40625 C 144.1875 325.675781 143.765625 325.902344 143.316406 326.085938 C 142.871094 326.273438 142.410156 326.414062 141.933594 326.507812 C 141.460938 326.601562 140.980469 326.648438 140.496094 326.648438 C 140.011719 326.648438 139.53125 326.601562 139.058594 326.507812 C 138.582031 326.414062 138.121094 326.273438 137.675781 326.085938 C 137.226562 325.902344 136.800781 325.675781 136.398438 325.40625 C 135.996094 325.136719 135.625 324.832031 135.28125 324.488281 C 134.941406 324.144531 134.632812 323.773438 134.367188 323.371094 C 134.097656 322.96875 133.871094 322.542969 133.683594 322.09375 C 133.5 321.648438 133.359375 321.1875 133.265625 320.710938 C 133.171875 320.234375 133.125 319.757812 133.125 319.273438 C 133.125 318.789062 133.171875 318.308594 133.265625 317.832031 C 133.359375 317.359375 133.5 316.898438 133.683594 316.449219 C 133.871094 316.003906 134.097656 315.578125 134.367188 315.175781 C 134.632812 314.773438 134.941406 314.398438 135.28125 314.054688 C 135.625 313.714844 135.996094 313.410156 136.398438 313.140625 C 136.800781 312.871094 137.226562 312.644531 137.675781 312.457031 C 138.121094 312.273438 138.582031 312.132812 139.058594 312.039062 C 139.53125 311.941406 140.011719 311.894531 140.496094 311.894531 C 140.980469 311.894531 141.460938 311.941406 141.933594 312.039062 C 142.410156 312.132812 142.871094 312.273438 143.316406 312.457031 C 143.765625 312.644531 144.1875 312.871094 144.589844 313.140625 C 144.992188 313.410156 145.367188 313.714844 145.707031 314.054688 C 146.050781 314.398438 146.355469 314.773438 146.625 315.175781 C 146.894531 315.578125 147.121094 316.003906 147.308594 316.449219 C 147.492188 316.898438 147.632812 317.359375 147.726562 317.832031 C 147.820312 318.308594 147.867188 318.789062 147.867188 319.273438 Z M 147.867188 319.273438"/>
@@ -429,46 +530,48 @@
                         </svg>
                     </div>
 
-                    <div class="property-title">
-                        <div class="title-single-line">
-                            <span class="type" id="viewPropType">شقة</span>
-                            <span class="action" id="viewPropAction">للبيع</span>
+                    <div class="main-body">
+                        <div class="property-title">
+                            <div class="title-single-line">
+                                <span class="type" id="viewPropType">شقة</span>
+                                <span class="action" id="viewPropAction">للبيع</span>
+                            </div>
+                            <div class="location" id="viewLocation">حي النرجس - الرياض</div>
+                            <div class="total-price" id="viewTotalPrice">1,200,000 ريال</div>
                         </div>
-                        <div class="location" id="viewLocation">حي النرجس - الرياض</div>
-                        <div class="total-price" id="viewTotalPrice">1,200,000 ريال</div>
-                    </div>
 
-                    <div class="license-cards">
-                        <div class="license-card" id="cardArea">
-                            <label>المساحة :</label>
-                            <div class="value-wrapper">
-                                <span class="unit">م²</span>
-                                <span class="number" id="viewArea">350</span>
+                        <div class="license-cards">
+                            <div class="license-card" id="cardArea">
+                                <label>المساحة :</label>
+                                <div class="value-wrapper">
+                                    <span class="unit">م²</span>
+                                    <span class="number" id="viewArea">350</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="license-card" id="cardStreet">
-                            <label>عرض الشارع :</label>
-                            <div class="value-wrapper">
-                                <span class="unit">متر</span>
-                                <span class="number" id="viewStreet">20</span>
+                            <div class="license-card" id="cardStreet">
+                                <label>عرض الشارع :</label>
+                                <div class="value-wrapper">
+                                    <span class="unit">متر</span>
+                                    <span class="number" id="viewStreet">20</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="license-card" id="cardPricePerMeter">
-                            <label>سعر المتر :</label>
-                            <div class="value-wrapper">
-                                <span class="number" id="viewPrice">4,500 ريال</span>
+                            <div class="license-card" id="cardPricePerMeter">
+                                <label>سعر المتر :</label>
+                                <div class="value-wrapper">
+                                    <span class="number" id="viewPrice">4,500 ريال</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="license-card" id="cardFalNo">
-                            <label>رقم رخصة فال :</label>
-                            <div class="value-wrapper">
-                                <span class="number" id="viewFalNo">1200013881</span>
+                            <div class="license-card" id="cardFalNo">
+                                <label>رقم رخصة فال :</label>
+                                <div class="value-wrapper">
+                                    <span class="number" id="viewFalNo">1200013881</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="license-card" id="cardAdNo">
-                            <label>رقم ترخيص الإعلان :</label>
-                            <div class="value-wrapper">
-                                <span class="number" id="viewAdNo">7201056329</span>
+                            <div class="license-card" id="cardAdNo">
+                                <label>رقم ترخيص الإعلان :</label>
+                                <div class="value-wrapper">
+                                    <span class="number" id="viewAdNo">7201056329</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -483,7 +586,7 @@
                     <div class="footer-text">
                         يمكنك الاطلاع على تفاصيل العقار<br>
                         عبر <highlight>تطبيق عقار</highlight><br>
-                        <small style="font-size: 11px; opacity: 0.85;">المنصة الإلكترونية الأولى في المملكة</small>
+                        <small>المنصة الإلكترونية الأولى في المملكة</small>
                     </div>
 
                     <div id="qrcode" class="qr-box"></div>
@@ -494,6 +597,23 @@
 
     <script>
         let customQRImage = null;
+
+        // المقاسات الجاهزة: [عرض، ارتفاع، وحدة]
+        const PRESETS = {
+            a4l:   [29.7, 21,   'cm'],
+            a4p:   [21,   29.7, 'cm'],
+            a3l:   [42,   29.7, 'cm'],
+            a3p:   [29.7, 42,   'cm'],
+            b21:   [200,  100,  'cm'],
+            b31:   [300,  100,  'cm'],
+            b11:   [100,  100,  'cm'],
+            sq:    [1080, 1080, 'px'],
+            story: [1080, 1920, 'px']
+        };
+
+        const DESIGN_LONG_SIDE = 1000; // طول الضلع الأطول في التصميم (بكسل داخل الصفحة)
+        const WIDE_RATIO = 1.8;        // من هذي النسبة وفوق نستخدم التخطيط العريض
+        const state = { W0: 1000, H0: 707 };
 
         function render() {
             document.getElementById('viewPropType').innerText = document.getElementById('propType').value;
@@ -523,13 +643,85 @@
             fitBanner();
         }
 
-        function updateDimensions() {
-            const w = parseInt(document.getElementById('bannerWidth').value) || 850;
-            const h = parseInt(document.getElementById('bannerHeight').value) || 600;
-            const banner = document.getElementById('banner');
+        // اختيار مقاس جاهز
+        function applyPreset() {
+            const key = document.getElementById('sizePreset').value;
+            if (PRESETS[key]) {
+                const [w, h, unit] = PRESETS[key];
+                document.getElementById('bannerWidth').value = w;
+                document.getElementById('bannerHeight').value = h;
+                document.getElementById('sizeUnit').value = unit;
+            }
+            updateDimensions();
+        }
 
-            banner.style.width = w + 'px';
-            banner.style.height = h + 'px';
+        // المعلن غيّر الأرقام يدوياً
+        function customSize() {
+            document.getElementById('sizePreset').value = 'custom';
+            updateDimensions();
+        }
+
+        function getSize() {
+            let w = parseFloat(document.getElementById('bannerWidth').value);
+            let h = parseFloat(document.getElementById('bannerHeight').value);
+            if (!(w > 0)) w = 29.7;
+            if (!(h > 0)) h = 21;
+            return { w, h, unit: document.getElementById('sizeUnit').value };
+        }
+
+        function fmt(n) { return (Math.round(n * 100) / 100).toString(); }
+
+        // يحسب حجم التصدير النهائي بالبكسل (مع حد أمان للذاكرة)
+        function getExportPixels() {
+            const { w, h } = getSize();
+            const ratio = w / h;
+            const longSide = parseInt(document.getElementById('exportQuality').value) || 4000;
+            let outW, outH;
+            if (ratio >= 1) { outW = longSide; outH = longSide / ratio; }
+            else { outH = longSide; outW = longSide * ratio; }
+
+            const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+            const maxPixels = isMobile ? 16e6 : 60e6;
+            let reduced = false;
+            if (outW * outH > maxPixels) {
+                const f = Math.sqrt(maxPixels / (outW * outH));
+                outW *= f; outH *= f; reduced = true;
+            }
+            return { outW: Math.round(outW), outH: Math.round(outH), reduced };
+        }
+
+        function updateDimensions() {
+            const { w, h, unit } = getSize();
+            const ratio = w / h;
+
+            // حجم التصميم داخل الصفحة: الضلع الأطول = 1000
+            let W0, H0;
+            if (ratio >= 1) { W0 = DESIGN_LONG_SIDE; H0 = DESIGN_LONG_SIDE / ratio; }
+            else { H0 = DESIGN_LONG_SIDE; W0 = DESIGN_LONG_SIDE * ratio; }
+            W0 = Math.max(Math.round(W0), 120);
+            H0 = Math.max(Math.round(H0), 120);
+            state.W0 = W0; state.H0 = H0;
+
+            const banner = document.getElementById('banner');
+            banner.style.width = W0 + 'px';
+            banner.style.height = H0 + 'px';
+
+            // وحدة التكبير: كل النصوص والأحجام تتناسب مع اللوحة
+            const wide = ratio >= WIDE_RATIO;
+            banner.classList.toggle('wide', wide);
+            let u;
+            if (wide) u = Math.min(W0 / 1000, H0 / 480);
+            else u = Math.min(W0 / 850, H0 / 600);
+            banner.style.setProperty('--u', u + 'px');
+
+            // معلومات المقاس
+            const g = (a, b) => b ? g(b, a % b) : a;
+            const { outW, outH, reduced } = getExportPixels();
+            const unitLabel = unit === 'cm' ? 'سم' : 'بكسل';
+            document.getElementById('sizeInfo').innerHTML =
+                `المقاس: <b>${fmt(w)} × ${fmt(h)} ${unitLabel}</b><br>` +
+                `الصورة الناتجة: <b>${outW} × ${outH} بكسل</b>` +
+                (reduced ? '<br><span style="color:#fbbf24">تم تخفيض الدقة تلقائياً لتناسب ذاكرة الجهاز</span>' : '');
 
             fitBanner();
         }
@@ -544,7 +736,6 @@
             const isMobile = window.innerWidth <= 900;
 
             if (isMobile) {
-                // على الجوال: نقيس بالعرض فقط ونضبط ارتفاع منطقة المعاينة حسب اللوحة
                 const availableWidth = area.clientWidth - 20;
                 const scale = Math.min(availableWidth / bannerWidth, 1);
                 wrapper.style.transform = `scale(${scale})`;
@@ -563,7 +754,8 @@
             const url = document.getElementById('adUrl').value;
             const qrContainer = document.getElementById('qrcode');
             qrContainer.innerHTML = '';
-            new QRCode(qrContainer, { text: url, width: 70, height: 70, colorDark: "#000000", colorLight: "#ffffff" });
+            // نولّد الـ QR بدقة عالية ويتصغر بالـ CSS، عشان يطلع حاد في الطباعة
+            new QRCode(qrContainer, { text: url, width: 512, height: 512, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M });
         }
 
         function uploadQR(event) {
@@ -579,37 +771,89 @@
             }
         }
 
-        function downloadImage() {
+        function setBusy(busy, msg) {
+            document.getElementById('btnPng').disabled = busy;
+            document.getElementById('btnPdf').disabled = busy;
+            document.getElementById('statusMsg').innerText = msg || '';
+        }
+
+        // يصوّر اللوحة بالدقة المطلوبة
+        async function captureBanner() {
             const banner = document.getElementById('banner');
-            html2canvas(banner, { scale: 3 }).then(canvas => {
+            const { outW, outH } = getExportPixels();
+            const scale = outW / state.W0;
+
+            const canvas = await html2canvas(banner, {
+                scale: scale,
+                useCORS: true,
+                backgroundColor: '#f3f4f6',
+                scrollX: 0,
+                scrollY: -window.scrollY,
+                onclone: (doc) => {
+                    // في النسخة المصدّرة: بدون تصغير المعاينة وبدون زوايا مدورة أو ظل
+                    const wrapper = doc.getElementById('bannerWrapper');
+                    const area = doc.getElementById('previewArea');
+                    const b = doc.getElementById('banner');
+                    if (wrapper) wrapper.style.transform = 'none';
+                    if (area) { area.style.overflow = 'visible'; area.style.height = 'auto'; area.style.minHeight = '0'; }
+                    if (b) { b.style.borderRadius = '0'; b.style.boxShadow = 'none'; }
+                }
+            });
+            return canvas;
+        }
+
+        async function downloadImage() {
+            try {
+                setBusy(true, 'جاري تجهيز الصورة...');
+                if (document.fonts && document.fonts.ready) await document.fonts.ready;
+                const canvas = await captureBanner();
                 const link = document.createElement('a');
-                link.download = `لوحة-عقار.png`;
+                link.download = 'لوحة-عقار.png';
                 link.href = canvas.toDataURL('image/png');
                 link.click();
-            });
+                setBusy(false, '');
+            } catch (e) {
+                console.error(e);
+                setBusy(false, 'تعذر تجهيز الصورة. جرّب جودة أقل أو مقاس أصغر.');
+            }
         }
 
-        function downloadPDF() {
-            const { jsPDF } = window.jspdf;
-            const banner = document.getElementById('banner');
+        async function downloadPDF() {
+            try {
+                setBusy(true, 'جاري تجهيز ملف الطباعة...');
+                if (document.fonts && document.fonts.ready) await document.fonts.ready;
+                const { jsPDF } = window.jspdf;
+                const canvas = await captureBanner();
+                const imgData = canvas.toDataURL('image/jpeg', 0.95);
 
-            html2canvas(banner, { scale: 4 }).then(canvas => {
-                const imgData = canvas.toDataURL('image/jpeg', 1.0);
-                const isVertical = banner.offsetHeight > banner.offsetWidth;
+                // حجم صفحة الـ PDF = المقاس الحقيقي اللي اختاره المعلن
+                let { w, h, unit } = getSize();
+                const maxPt = 14000;
+                const toPt = unit === 'cm' ? 28.3465 : 0.75;
+                const k = Math.min(1, maxPt / (Math.max(w, h) * toPt));
+                w *= k; h *= k;
+
                 const pdf = new jsPDF({
-                    orientation: isVertical ? 'p' : 'l',
-                    unit: 'px',
-                    format: [canvas.width, canvas.height]
+                    orientation: w >= h ? 'l' : 'p',
+                    unit: unit === 'cm' ? 'cm' : 'px',
+                    format: [w, h],
+                    hotfixes: unit === 'px' ? ['px_scaling'] : []
                 });
-                pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
-                pdf.save(`لوحة-طباعة.pdf`);
-            });
+                pdf.addImage(imgData, 'JPEG', 0, 0, w, h);
+                pdf.save('لوحة-طباعة.pdf');
+                setBusy(false, k < 1 ? 'تم تصغير صفحة الـ PDF لأن المقاس كبير جداً، والنسبة محفوظة.' : '');
+            } catch (e) {
+                console.error(e);
+                setBusy(false, 'تعذر تجهيز الملف. جرّب جودة أقل أو مقاس أصغر.');
+            }
         }
+
+        document.getElementById('exportQuality').addEventListener('change', updateDimensions);
 
         window.onload = function() {
             render();
             toggleFields();
-            updateDimensions();
+            applyPreset();
             generateQR();
             window.addEventListener('resize', fitBanner);
             window.addEventListener('orientationchange', () => setTimeout(fitBanner, 200));
