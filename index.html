@@ -271,6 +271,33 @@
 
         .store-badges { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
         .store-btn { background: #000; color: #fff; padding: 5px 12px; border-radius: 6px; font-size: 9px; text-align: center; font-weight: bold; }
+
+        /* ===== الجوال والشاشات الصغيرة ===== */
+        @media (max-width: 900px) {
+            body {
+                flex-direction: column;
+                padding: 10px;
+                gap: 12px;
+            }
+            .preview-area {
+                order: -1;
+                flex: none;
+                width: 100%;
+                min-height: 0;
+                padding: 20px 0;
+                box-sizing: border-box;
+                border-radius: 12px;
+            }
+            .controls-sidebar {
+                order: 1;
+                width: 100%;
+                max-height: none;
+                overflow-y: visible;
+                box-sizing: border-box;
+                padding: 15px;
+            }
+            .form-group input, .form-group select { font-size: 16px; }
+        }
     </style>
 </head>
 <body>
@@ -512,17 +539,23 @@
             const wrapper = document.getElementById('bannerWrapper');
             const banner = document.getElementById('banner');
 
-            const availableWidth = area.clientWidth - 40;
-            const availableHeight = area.clientHeight - 40;
-
             const bannerWidth = banner.offsetWidth;
             const bannerHeight = banner.offsetHeight;
+            const isMobile = window.innerWidth <= 900;
 
-            const scaleX = availableWidth / bannerWidth;
-            const scaleY = availableHeight / bannerHeight;
-            const scale = Math.min(scaleX, scaleY, 1);
-
-            wrapper.style.transform = `scale(${scale})`;
+            if (isMobile) {
+                // على الجوال: نقيس بالعرض فقط ونضبط ارتفاع منطقة المعاينة حسب اللوحة
+                const availableWidth = area.clientWidth - 20;
+                const scale = Math.min(availableWidth / bannerWidth, 1);
+                wrapper.style.transform = `scale(${scale})`;
+                area.style.height = (bannerHeight * scale + 40) + 'px';
+            } else {
+                area.style.height = '';
+                const availableWidth = area.clientWidth - 40;
+                const availableHeight = area.clientHeight - 40;
+                const scale = Math.min(availableWidth / bannerWidth, availableHeight / bannerHeight, 1);
+                wrapper.style.transform = `scale(${scale})`;
+            }
         }
 
         function generateQR() {
@@ -579,6 +612,7 @@
             updateDimensions();
             generateQR();
             window.addEventListener('resize', fitBanner);
+            window.addEventListener('orientationchange', () => setTimeout(fitBanner, 200));
         };
     </script>
 </body>
