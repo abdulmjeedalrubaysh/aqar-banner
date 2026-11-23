@@ -916,5 +916,140 @@
             window.addEventListener('orientationchange', () => setTimeout(fitBanner, 200));
         };
     </script>
+    <!-- ===== إضافة: رقم التواصل + التحكم بحجم الخط ===== -->
+<style>
+    #banner { --ts: 1; --ps: 1; --c: 1; }
+
+    /* حجم كلمتي العنوان (دور / للإيجار) */
+    #banner .title-single-line {
+        font-size: calc(48 * var(--u) * var(--ts));
+        gap: calc(12 * var(--u) * var(--ts));
+        flex-wrap: wrap;
+    }
+
+    /* ضغط تلقائي للبطاقات لو المساحة ما كفت */
+    #banner .license-cards { gap: calc(8 * var(--u) * var(--c)); }
+    #banner .license-card { padding: calc(10 * var(--u) * var(--c)) calc(18 * var(--u)); font-size: calc(16 * var(--u) * var(--c)); }
+    #banner .license-card label { font-size: calc(16 * var(--u) * var(--c)); }
+    #banner .property-title .location { font-size: calc(20 * var(--u) * var(--c)); }
+    #banner .property-title .total-price { font-size: calc(28 * var(--u) * var(--c)); }
+
+    /* رقم التواصل */
+    #banner .banner-header { justify-content: space-between; gap: calc(16 * var(--u)); }
+    .contact-pill {
+        --k: calc(var(--u) * var(--ps));
+        display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+        gap: calc(10 * var(--k));
+        background: #111; color: #fff;
+        border: calc(3 * var(--u)) solid var(--aqar-light-green);
+        border-radius: calc(40 * var(--k));
+        padding: calc(5 * var(--k)) calc(8 * var(--k)) calc(5 * var(--k)) calc(18 * var(--k));
+        min-width: 0; max-width: 100%; box-sizing: border-box;
+    }
+    .contact-icon {
+        width: calc(34 * var(--k)); height: calc(34 * var(--k));
+        border-radius: 50%; background: var(--aqar-light-green);
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .contact-icon svg { width: 58%; height: 58%; display: block; }
+    .contact-label { font-size: calc(15 * var(--k)); font-weight: 700; color: var(--aqar-light-green); line-height: 1.2; white-space: nowrap; }
+    .contact-number { font-size: calc(34 * var(--k)); font-weight: 900; line-height: 1.15; direction: ltr; unicode-bidi: isolate; white-space: nowrap; }
+
+    /* لوحة التحكم */
+    .scale-box { background: #1f1a0f; border: 1px solid #5b4410; border-radius: 12px; padding: 12px; margin-bottom: 15px; }
+    .scale-box .title { color: #fbbf24; font-weight: bold; font-size: 14px; margin-bottom: 10px; }
+    .scale-row { margin-bottom: 10px; }
+    .scale-row label { display: flex; justify-content: space-between; font-size: 12px; color: #ccc; margin-bottom: 4px; }
+    .scale-row label b { color: #fff; }
+    .scale-row input[type="range"] { width: 100%; margin: 0; accent-color: var(--aqar-light-green); }
+    .fit-warn { display: none; font-size: 12px; color: #fbbf24; line-height: 1.6; }
+</style>
+
+<script>
+(function () {
+    const $ = id => document.getElementById(id);
+    const banner = $('banner');
+
+    /* 1) خانة رقم التواصل (بعد سعر المتر) */
+    $('priceVal').closest('.form-group').insertAdjacentHTML('afterend', `
+        <div class="form-group">
+            <label>رقم التواصل</label>
+            <input type="text" id="phoneVal" value="0550000000" inputmode="tel" oninput="render()">
+        </div>`);
+
+    /* 2) خيار إظهار / إخفاء رقم التواصل */
+    $('showFalNo').closest('.toggle-item').insertAdjacentHTML('afterend', `
+        <div class="toggle-item" style="grid-column: span 2;">
+            <span>رقم التواصل</span>
+            <input type="checkbox" id="showPhone" checked onchange="toggleFields()">
+        </div>`);
+
+    /* 3) سلايدرات الأحجام */
+    document.querySelector('.fields-toggle-box').insertAdjacentHTML('afterend', `
+        <div class="scale-box">
+            <div class="title">🔠 أحجام الخط</div>
+            <div class="scale-row">
+                <label><span>حجم العنوان (دور / للإيجار)</span><b id="titleScaleVal">100%</b></label>
+                <input type="range" id="titleScale" min="50" max="250" step="5" value="100">
+            </div>
+            <div class="scale-row">
+                <label><span>حجم رقم التواصل</span><b id="phoneScaleVal">100%</b></label>
+                <input type="range" id="phoneScale" min="50" max="200" step="5" value="100">
+            </div>
+            <div class="fit-warn" id="fitWarn">المحتوى أكبر من مساحة اللوحة. صغّر حجم الخط أو أخفِ بعض الحقول.</div>
+        </div>`);
+
+    /* 4) شريط الرقم في أعلى اللوحة */
+    banner.querySelector('.banner-header').insertAdjacentHTML('beforeend', `
+        <div class="contact-pill" id="contactPill">
+            <div class="contact-icon">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="#000" d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+            </div>
+            <span class="contact-label">للتواصل</span>
+            <span class="contact-number" id="viewPhone"></span>
+        </div>`);
+
+    /* ضغط تلقائي بسيط للبطاقات لو المحتوى ما كفى في اللوحة */
+    function autoFit() {
+        const body = banner.querySelector('.main-body');
+        if (!body || !body.clientHeight) return;
+        let c = 1;
+        banner.style.setProperty('--c', c);
+        while (body.scrollHeight > body.clientHeight + 1 && c > 0.5) {
+            c = Math.round((c - 0.03) * 100) / 100;
+            banner.style.setProperty('--c', c);
+        }
+        $('fitWarn').style.display = body.scrollHeight > body.clientHeight + 1 ? 'block' : 'none';
+    }
+
+    function syncExtras() {
+        const ts = $('titleScale').value, ps = $('phoneScale').value;
+        banner.style.setProperty('--ts', ts / 100);
+        banner.style.setProperty('--ps', ps / 100);
+        $('titleScaleVal').innerText = ts + '%';
+        $('phoneScaleVal').innerText = ps + '%';
+        const phone = $('phoneVal').value.trim();
+        $('viewPhone').innerText = phone;
+        $('contactPill').style.display = ($('showPhone').checked && phone) ? 'flex' : 'none';
+        autoFit();
+    }
+
+    $('titleScale').addEventListener('input', syncExtras);
+    $('phoneScale').addEventListener('input', syncExtras);
+
+    /* ربط الإضافة بدوال الصفحة الأصلية */
+    const origRender = window.render;
+    window.render = function () { origRender(); syncExtras(); };
+
+    const origToggle = window.toggleFields;
+    window.toggleFields = function () { origToggle(); syncExtras(); };
+
+    const origFit = window.fitBanner;
+    window.fitBanner = function () { autoFit(); origFit(); };
+
+    syncExtras();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(autoFit);
+})();
+</script>
 </body>
 </html>
